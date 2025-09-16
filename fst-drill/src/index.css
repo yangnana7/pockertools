@@ -70,7 +70,7 @@ body{
 
 /* --- UI fix fallback --- */
 .qwrap { position: relative; min-height: 280px; overflow: visible; }
-.board-col{ width:clamp(280px,22vw,320px); max-width: 320px; margin-left:auto; }
+.board-col{ position:relative; width:clamp(280px,22vw,320px); max-width: 320px; margin-left:auto; }
 @media (max-width: 1024px) {
   .board-col { display: none; }
 }

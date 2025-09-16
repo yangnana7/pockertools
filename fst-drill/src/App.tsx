@@ -261,7 +261,7 @@ function BoardMini({ scale = 1, boardName, position }: { scale?: number; boardNa
     try { console.log('[BoardMini] inside .board-col ? =>', !!el.closest('.board-col')) } catch {}
   }, [])
   return (
-    <div ref={ref} className="board-mini rounded-xl" style={{ border:'1px solid rgba(255,255,255,0.08)', background:'rgba(0,0,0,0.2)', padding:12, transform:`scale(${scale})`, transformOrigin:'top left' }}>
+    <div ref={ref} className="board-mini rounded-xl" style={{ position:'relative', border:'1px solid rgba(255,255,255,0.08)', background:'rgba(0,0,0,0.2)', padding:12, transform:`scale(${scale})`, transformOrigin:'top left' }}>
       <div className="poker-wrap">
         <div className="table felt">
           <div className="board-cards">
@@ -504,4 +504,3 @@ export default function App() {
     </div>
   )
 }
-
