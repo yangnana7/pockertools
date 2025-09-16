@@ -92,11 +92,11 @@ body{
 /* grid 12 layout for question */
 .layout-12{ display:grid; grid-template-columns: 1fr; gap:16px }
 .layout-12 .col-main{ grid-column: 1 / -1 }
-.layout-12 .range-panel{ grid-column: 1 / -1 }
+.layout-12 .board-col{ grid-column: 1 / -1 }
 @media (min-width: 1024px){
   .layout-12{ grid-template-columns: repeat(12, minmax(0, 1fr)); }
   .layout-12 .col-main{ grid-column: span 8 }
-  .layout-12 .range-panel{ grid-column: span 4 }
+  .layout-12 .board-col{ grid-column: span 4 }
 }
 
 /* RANGE3 side grid: 1列で縦積み */
@@ -152,3 +152,55 @@ body{
 .card.back{background:repeating-linear-gradient(45deg,#0e2536,#0e2536 6px,#113047 6px,#113047 12px);border-color:rgba(255,255,255,0.12)}
 .pip{font-weight:700}
 .pip.red{color:#d43c3c}
+
+/* ==== CSS-only hotfix (simple) =================================== */
+/* 1) 質問パネル内に右カラムを“固定”配置し、左側に余白を確保 */
+.qwrap{
+  position: relative;
+  padding-right: 352px;           /* 320px(右カラム) + 32px(間隔) */
+  min-height: 320px;
+  overflow: visible;
+}
+
+/* 右カラム（ボードプレビュー置き場）を qwrap の右上に固定 */
+.qwrap .board-col{
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  width: 320px;
+  max-width: 320px;
+  margin: 0;
+  display: block;
+  z-index: 1;
+}
+
+/* 小画面では右カラムを非表示にして本文を全幅に */
+@media (max-width: 1024px){
+  .qwrap{ padding-right: 0; }
+  .qwrap .board-col{ display: none; position: static; width: auto; max-width: none; }
+}
+
+/* 2) ボードの基準要素は必ず relative（過去の static を上書き） */
+#board-mini-root{
+  position: relative !important;
+  inset: auto !important;
+  transform-origin: top left !important;
+}
+
+/* 3) 統計チップは固定グリッド（折返しでズレない） */
+.stats{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 12px;
+}
+@media (min-width: 768px){
+  .stats{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+}
+
+/* 4) 文字は横書き＆安全改行（縦長化/はみ出し防止） */
+:root, body, .qwrap{ writing-mode: horizontal-tb; }
+.qwrap *{ white-space: normal; word-break: break-word; }
+
+/* 5) 念のため旧オーバーレイ類は全て無効化 */
+.overlay-card, [data-overlay="board"], .board-portal{ display: none !important; }
+/* ================================================================ */
