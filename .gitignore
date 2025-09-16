@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node
+node_modules/
+.pnpm-store/
+dist/
+build/
+.next/
+.nuxt/
+.vite/
+.cache/
+.parcel-cache/
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env files
+.env
+.env.*
+.env.local
+.env.*.local
