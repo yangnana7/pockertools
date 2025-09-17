@@ -204,3 +204,80 @@ body{
 /* 5) 念のため旧オーバーレイ類は全て無効化 */
 .overlay-card, [data-overlay="board"], .board-portal{ display: none !important; }
 /* ================================================================ */
+
+/* ==== Width 100% normalization (trial) =========================== */
+/* Force main content rows/blocks to span full width to avoid wrap glitches */
+.app,
+.toolbar,
+.card,
+.question-panel,
+.qwrap,
+.layout-12,
+.layout-12 .col-main,
+.row,
+.seg,
+.question,
+.grid,
+.stats,
+.opt,
+.panel{
+  width: 80%;
+  max-width: 80%;
+}
+
+/* Allow flex children to shrink (prevent overflow-induced breaking) */
+.row > *, .seg > * { min-width: 0; }
+
+/* Ensure option blocks stretch fully within their grid cell */
+.opt { display: block; }
+
+/* Media safety for embedded visuals */
+img, video, canvas, svg { max-width: 100%; height: auto; }
+/* ================================================================ */
+
+/* ===== Final CSS-only polish ===== */
+/* デフォルトは通常のパディングだけ（ボードが無いモード） */
+.qwrap{
+  position: relative;
+  min-height: 320px;
+  overflow: visible;
+  padding: 16px;                 /* 基本パディング */
+}
+
+/* .qwrap 内に .board-col（ボード列）が存在するときだけ右余白を広げる */
+.qwrap:has(.board-col){
+  padding-right: 352px;          /* 320px + 32px マージン */
+}
+
+/* 右カラムは qwrap 内の右上に固定（“親relative”の中だけで位置決め） */
+.qwrap .board-col{
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  width: 320px;
+  max-width: 320px;
+  margin: 0;
+  display: block;
+  z-index: 1;
+}
+
+/* 小画面では右カラムを消し、本文を全幅に */
+@media (max-width:1024px){
+  .qwrap{ padding-right: 16px; } /* 余白を通常値に戻す */
+  .qwrap .board-col{ display: none; position: static; width: auto; max-width: none; }
+}
+
+/* ボード内の基準を必ず relative に（過去の static を上書き） */
+#board-mini-root{
+  position: relative !important;
+  inset: auto !important;
+  transform-origin: top left !important;
+}
+
+/* 統計は2/4列固定で回り込み防止（据え置き） */
+.stats{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+@media (min-width:768px){ .stats{ grid-template-columns:repeat(4,minmax(0,1fr)); } }
+
+/* 念のため旧オーバーレイ類は全無効 */
+.overlay-card, [data-overlay="board"], .board-portal{ display:none !important; }
+/* ================================= */

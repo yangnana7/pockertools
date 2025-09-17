@@ -77,8 +77,17 @@ function saveMistakes(arr: Question[]) { localStorage.setItem(MISTAKES_KEY, JSON
 
 function clamp01(x: number) { return Math.min(1, Math.max(0, x)) }
 function toPctStr(x: number) { const v = Math.round(x * 1000) / 10; return `${v.toFixed(1)}%` }
-function pick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)] }
-function shuffle<T>(arr: T[]): T[] { const a = arr.slice(); for (let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a }
+function pick<T>(arr: readonly T[]): T { return arr[Math.floor(Math.random() * arr.length)]! }
+function shuffle<T>(arr: readonly T[]): T[] {
+  const a = arr.slice()
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    const tmp = a[i]!
+    a[i] = a[j]!
+    a[j] = tmp
+  }
+  return a
+}
 function fmtChips(x: number) { return `${x}` }
 
 function generatePotAndBet() { const potBase = Math.round((Math.random()*90+10)); const pot = potBase; const factors=[0.25,0.33,0.4,0.5,0.66,0.75,0.8,1.0,1.25,1.5]; const f = pick(factors); const bet = Math.max(1, Math.round(pot*f)); return { pot, bet } }
@@ -91,9 +100,11 @@ function genPotOddsQuestion(): Question {
   const m2 = clamp01(pot / (pot + 2 * bet))
   const m3 = clamp01(bet / Math.max(1, pot))
   const vals = [correct, m1, m2, m3]
-  const labels = vals.map(toPctStr)
   const unique: { val: number; label: string; isCorrect: boolean }[] = []
-  for (let i=0;i<vals.length;i++){ const label = labels[i]; if (!unique.some(u=>u.label===label)) unique.push({ val: vals[i], label, isCorrect: i===0 }) }
+  vals.forEach((val, i) => {
+    const label = toPctStr(val)
+    if (!unique.some(u => u.label === label)) unique.push({ val, label, isCorrect: i === 0 })
+  })
   while (unique.length < 4) { const tweak = clamp01(correct + (Math.random()*0.2 - 0.1)); const l = toPctStr(tweak); if (!unique.some(u=>u.label===l)) unique.push({ val: tweak, label: l, isCorrect: false }) }
   const shuffled = shuffle(unique)
   const correctIndex = shuffled.findIndex(o=>o.isCorrect)
@@ -110,9 +121,11 @@ function genFEQuestion(): Question {
   const m2 = clamp01(pot / (pot + bet))
   const m3 = clamp01(bet / Math.max(1, pot))
   const vals = [correct, m1, m2, m3]
-  const labels = vals.map(toPctStr)
   const unique: { val: number; label: string; isCorrect: boolean }[] = []
-  for (let i=0;i<vals.length;i++){ const label = labels[i]; if (!unique.some(u=>u.label===label)) unique.push({ val: vals[i], label, isCorrect: i===0 }) }
+  vals.forEach((val, i) => {
+    const label = toPctStr(val)
+    if (!unique.some(u => u.label === label)) unique.push({ val, label, isCorrect: i === 0 })
+  })
   while (unique.length < 4) { const tweak = clamp01(correct + (Math.random()*0.2 - 0.1)); const l = toPctStr(tweak); if (!unique.some(u=>u.label===l)) unique.push({ val: tweak, label: l, isCorrect: false }) }
   const shuffled = shuffle(unique)
   const correctIndex = shuffled.findIndex(o=>o.isCorrect)
@@ -258,7 +271,6 @@ function BoardMini({ scale = 1, boardName, position }: { scale?: number; boardNa
     const el = ref.current
     if (!el) return
     el.id = 'board-mini-root'
-    try { console.log('[BoardMini] inside .board-col ? =>', !!el.closest('.board-col')) } catch {}
   }, [])
   return (
     <div ref={ref} className="board-mini rounded-xl" style={{ position:'relative', border:'1px solid rgba(255,255,255,0.08)', background:'rgba(0,0,0,0.2)', padding:12, transform:`scale(${scale})`, transformOrigin:'top left' }}>
