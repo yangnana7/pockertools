@@ -45,13 +45,15 @@ body{
 .btn.primary{background:#18324a;border-color:#255;
 }
 .card{
-  background:rgba(255,255,255,0.04);
+  background:var(--panel);
   border:1px solid rgba(255,255,255,0.08);
   border-radius:14px;padding:18px;margin:12px 0
 }
 .question{font-size:18px;line-height:1.5}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:12px}
-.opt{background:#0b1222;border:1px solid rgba(255,255,255,0.08);padding:12px;border-radius:10px;cursor:pointer;text-align:center;color:var(--text)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:16px}
+.opt{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);padding:12px;border-radius:10px;cursor:pointer;text-align:center;color:var(--text);transition:background-color .2s ease}
+.opt:hover:not(.disabled){ background: rgba(34,197,94,0.15); }
+.opt:hover:not(:disabled){ background: rgba(34,197,94,0.15); }
 .opt:disabled{opacity:.85}
 .opt.correct{outline:2px solid var(--accent)}
 .opt.wrong{outline:2px solid var(--danger)}
@@ -66,7 +68,7 @@ body{
   position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
   background:rgba(0,0,0,0.5);backdrop-filter: blur(2px)
 }
-.panel{background:#0e1729;border:1px solid rgba(255,255,255,0.1);padding:24px 20px;border-radius:14px}
+.panel{background:var(--panel);border:1px solid rgba(255,255,255,0.05);padding:24px 20px;border-radius:16px}
 
 /* --- UI fix fallback --- */
 .qwrap { position: relative; min-height: 280px; overflow: visible; }
@@ -306,6 +308,30 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     .qwrap .board-col{ display:none; float:none; width:auto; max-width:none; margin:0; }
   }
 }
+
+/* ===== v6 UI improvements ===== */
+/* Board preview as normal-flow element by default */
+.qwrap .board-col{
+  position: static;
+  width: auto;
+  max-width: 320px;
+  margin-left: auto;
+}
+@media (max-width: 1024px){
+  .qwrap{ flex-direction: column; }
+  .qwrap .board-col{ display: block; margin: 0 auto; max-width: 280px; }
+}
+
+/* Readability tweaks */
+.timer{ font-size: 32px; color: var(--text); }
+.stats{ font-size: 14px; color: var(--muted); }
+
+/* Long text wrapping */
+.question, .stats, .opt{ word-break: break-word; overflow-wrap: anywhere; }
+
+/* Accessibility: focus ring and pointer */
+.btn, .opt{ cursor: pointer; }
+.opt:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ===== Range3 用の2カラム化（デスクトップのみ） ===== */
 @media (min-width:1024px){
