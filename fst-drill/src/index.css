@@ -281,3 +281,28 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
 /* 念のため旧オーバーレイ類は全無効 */
 .overlay-card, [data-overlay="board"], .board-portal{ display:none !important; }
 /* ================================= */
+
+/* Fallback for browsers without :has() */
+@supports not (selector(:has(.board-col))) {
+  /* Keep base padding only; no conditional right padding */
+  .qwrap { padding: 16px; }
+
+  /* Use float to reserve space for the right column when present */
+  .qwrap .board-col{
+    position: static;
+    float: right;
+    width: 320px;
+    max-width: 320px;
+    margin: 0 16px 16px 16px;
+    display: block;
+    z-index: 1;
+  }
+
+  /* Clear floats to contain .qwrap height */
+  .qwrap::after{ content:""; display: table; clear: both; }
+
+  /* On small screens, hide board and allow full width content */
+  @media (max-width:1024px){
+    .qwrap .board-col{ display:none; float:none; width:auto; max-width:none; margin:0; }
+  }
+}
