@@ -306,3 +306,32 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
     .qwrap .board-col{ display:none; float:none; width:auto; max-width:none; margin:0; }
   }
 }
+
+/* ===== Range3 用の2カラム化（デスクトップのみ） ===== */
+@media (min-width:1024px){
+  /* ボード列があるカードだけ、Grid に切り替える */
+  .qwrap:has(.board-col){
+    display: grid;
+    grid-template-columns: 1fr 320px;  /* 左=本文/ボタン、右=ボード */
+    gap: 16px;
+    padding: 16px;                     /* 右の巨大paddingは不要になる */
+    min-height: 320px;
+    overflow: visible;
+  }
+  .qwrap:has(.board-col) .board-col{
+    position: static;                  /* 先の absolute を無効化 */
+    width: 320px; max-width: 320px;
+    margin: 0;
+    z-index: 1;
+  }
+  /* 左カラムに入る要素（board-col 以外すべて） */
+  .qwrap:has(.board-col) > :not(.board-col){
+    grid-column: 1;
+  }
+}
+
+/* ボタンが .qwrap の外側にある場合の引き上げ（必要時のみ適用される） */
+@media (min-width:1024px){
+  .qwrap:has(.board-col) + .range-grid{ margin-top: -12px; }
+  .qwrap:has(.board-col) + *:has(button){ margin-top: -12px; }
+}
